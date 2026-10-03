@@ -3,118 +3,107 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CYBERDECK // PROGRAM DIRECTORY</title>
+  <title>Projects & Web Apps</title>
 
-  <!-- Glowing Neon '▶' Cyber Favicon -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230a0017' rx='20'/><polygon points='30,20 80,50 30,80' fill='%2300f3ff'/></svg>" type="image/svg+xml">
-  
-  <!-- Retro Cyberpunk Fonts from Google Fonts -->
+  <!-- Clean Retro Monospace & Display Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <!-- Subtle Cyberpunk Inline SVG Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230b0d12' rx='20'/><polygon points='35,25 75,50 35,75' fill='%2322d3ee'/></svg>" type="image/svg+xml">
 
   <style>
     :root {
-      --bg-dark: #0a0017;
-      --card-bg: rgba(20, 5, 38, 0.85);
-      --neon-cyan: #00f3ff;
-      --neon-pink: #ff007f;
-      --neon-purple: #b026ff;
-      --neon-yellow: #ffe600;
-      --text-main: #e2f1ff;
-      --text-muted: #8e9bb0;
-      --grid-line: rgba(255, 0, 127, 0.15);
+      --bg-dark: #080a0f;
+      --card-bg: rgba(15, 20, 30, 0.85);
+      --border-color: rgba(99, 102, 241, 0.2);
+      --border-hover: #38bdf8;
+      --accent-indigo: #6366f1;
+      --accent-cyan: #38bdf8;
+      --accent-cyan-glow: rgba(56, 189, 248, 0.25);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --grid-line: rgba(99, 102, 241, 0.05);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Share Tech Mono', monospace;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background-color: var(--bg-dark);
-      /* 80s Cyber Neon Grid Pattern */
       background-image: 
         linear-gradient(var(--grid-line) 1px, transparent 1px),
         linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-      background-size: 30px 30px;
+      background-size: 24px 24px;
       color: var(--text-main);
-      padding: 3rem 1.5rem;
-      max-width: 1200px;
+      padding: 3.5rem 1.5rem;
+      max-width: 1150px;
       margin: 0 auto;
       min-height: 100vh;
       position: relative;
-      overflow-x: hidden;
     }
 
-    /* CRT Scanline Overlay Effect */
+    /* Ultra-Fine & Subtle CRT Scanlines Overlay */
     body::before {
-      content: " ";
-      display: block;
+      content: "";
       position: fixed;
-      top: 0; left: 0; bottom: 0; right: 0;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), 
-                  linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-      z-index: 999;
-      background-size: 100% 3px, 6px 100%;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.18),
+        rgba(0, 0, 0, 0.18) 1px,
+        transparent 1px,
+        transparent 2px
+      );
       pointer-events: none;
+      z-index: 999;
+      opacity: 0.6;
     }
 
     header {
       margin-bottom: 3.5rem;
       text-align: center;
-      position: relative;
     }
 
-    /* Synthwave Glowing Title */
     header h1 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 4px;
-      color: #fff;
-      text-shadow: 
-        0 0 5px #fff,
-        0 0 10px #fff,
-        0 0 20px var(--neon-pink),
-        0 0 40px var(--neon-pink),
-        0 0 80px var(--neon-pink);
-      margin-bottom: 0.75rem;
+      font-family: 'Fira Code', monospace;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: #ffffff;
+      margin-bottom: 0.6rem;
     }
 
     header p {
-      color: var(--neon-cyan);
-      font-size: 1.1rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      text-shadow: 0 0 8px var(--neon-cyan);
+      font-family: 'Fira Code', monospace;
+      color: var(--accent-cyan);
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
     }
 
     #repo-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 2rem;
+      gap: 1.75rem;
     }
 
-    /* Cyber Card Container */
     .card {
       background: var(--card-bg);
-      border: 1px solid var(--neon-pink);
-      border-radius: 4px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
       padding: 1.5rem;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      box-shadow: 0 0 15px rgba(255, 0, 127, 0.2), inset 0 0 15px rgba(255, 0, 127, 0.1);
-      backdrop-filter: blur(5px);
-      transition: all 0.3s ease;
-      position: relative;
-      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+      backdrop-filter: blur(8px);
+      transition: all 0.25s ease-in-out;
     }
 
     .card:hover {
-      transform: translateY(-5px);
-      border-color: var(--neon-cyan);
-      box-shadow: 0 0 25px rgba(0, 243, 255, 0.5), inset 0 0 20px rgba(0, 243, 255, 0.2);
+      transform: translateY(-3px);
+      border-color: var(--border-hover);
+      box-shadow: 0 8px 30px var(--accent-cyan-glow);
     }
 
     .card-header {
@@ -122,75 +111,69 @@
     }
 
     .card-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.25rem;
-      letter-spacing: 1px;
-      text-transform: uppercase;
+      font-family: 'Fira Code', monospace;
+      font-size: 1.15rem;
+      font-weight: 600;
     }
 
-    /* Main Title Link points directly to Live Demo */
+    /* Primary Title Link points to Live Demo */
     .card-title a {
-      color: #fff;
+      color: #ffffff;
       text-decoration: none;
       transition: color 0.2s;
     }
 
-    .card:hover .card-title a {
-      color: var(--neon-cyan);
-      text-shadow: 0 0 8px var(--neon-cyan);
+    .card-title a:hover {
+      color: var(--accent-cyan);
     }
 
     .card-desc {
-      font-size: 0.95rem;
+      font-size: 0.925rem;
       color: var(--text-muted);
-      line-height: 1.5;
+      line-height: 1.55;
       margin-bottom: 1.5rem;
       flex-grow: 1;
     }
 
-    /* Prominent Retro CTA Button for Live Demo */
+    /* Prominent Primary Launch Button */
     .btn-launch {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       width: 100%;
       text-align: center;
-      background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple));
-      color: #fff;
-      padding: 0.75rem 1rem;
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 800;
-      font-size: 0.9rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(56, 189, 248, 0.2));
+      border: 1px solid var(--accent-indigo);
+      color: #ffffff;
+      padding: 0.65rem 1rem;
+      font-family: 'Fira Code', monospace;
+      font-weight: 600;
+      font-size: 0.875rem;
+      border-radius: 6px;
       text-decoration: none;
-      margin-bottom: 1.2rem;
-      border: none;
-      clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
-      box-shadow: 0 0 10px rgba(255, 0, 127, 0.4);
+      margin-bottom: 1rem;
       transition: all 0.2s ease;
     }
 
     .btn-launch:hover {
-      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
-      box-shadow: 0 0 20px rgba(0, 243, 255, 0.8);
-      color: #000;
-      font-weight: 900;
+      background: var(--accent-indigo);
+      border-color: var(--accent-indigo);
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+      color: #ffffff;
     }
 
     .btn-secondary {
-      background: #190a2e;
-      border: 1px solid var(--text-muted);
+      background: rgba(255, 255, 255, 0.03);
+      border-color: rgba(255, 255, 255, 0.15);
       color: var(--text-muted);
-      box-shadow: none;
     }
 
     .btn-secondary:hover {
-      background: #2b124c;
-      color: #fff;
-      border-color: #fff;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.08);
+      border-color: #ffffff;
+      color: #ffffff;
+      box-shadow: none;
     }
 
     /* Footer Meta Info & Secondary Source Link */
@@ -199,54 +182,50 @@
       justify-content: space-between;
       align-items: center;
       font-size: 0.8rem;
-      border-top: 1px dashed rgba(255, 0, 127, 0.3);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
       padding-top: 0.85rem;
+      font-family: 'Fira Code', monospace;
     }
 
     .badge {
       display: inline-block;
-      color: var(--neon-yellow);
-      background: rgba(255, 230, 0, 0.1);
-      border: 1px solid rgba(255, 230, 0, 0.3);
+      color: var(--accent-cyan);
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.2);
       padding: 0.15rem 0.5rem;
-      font-size: 0.75rem;
-      letter-spacing: 1px;
-      text-transform: uppercase;
+      border-radius: 4px;
+      font-size: 0.725rem;
     }
 
-    /* Subtle Secondary Link to GitHub Source Code */
+    /* Secondary Link to GitHub Source Code */
     .github-source-link {
       color: var(--text-muted);
       text-decoration: none;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      transition: color 0.2s, text-shadow 0.2s;
+      transition: color 0.2s;
     }
 
     .github-source-link:hover {
-      color: var(--neon-cyan);
-      text-shadow: 0 0 5px var(--neon-cyan);
+      color: var(--text-main);
+      text-decoration: underline;
     }
 
     #loading {
       text-align: center;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.3rem;
-      color: var(--neon-cyan);
-      letter-spacing: 3px;
-      text-shadow: 0 0 10px var(--neon-cyan);
-      margin-top: 5rem;
+      font-family: 'Fira Code', monospace;
+      font-size: 1.1rem;
+      color: var(--accent-cyan);
+      margin-top: 4rem;
     }
   </style>
 </head>
 <body>
 
   <header>
-    <h1 id="user-title">CYBER DECK</h1>
-    <p>// SYSTEM STATUS: ONLINE // SELECT PROGRAM TO RUN</p>
+    <h1 id="user-title">Projects</h1>
+    <p>Live Web Applications & Software Repositories</p>
   </header>
 
-  <div id="loading">[ INITIALIZING SYSTEM DIRECTORY... ]</div>
+  <div id="loading">Loading repositories...</div>
   <div id="repo-grid"></div>
 
   <script>
@@ -255,7 +234,7 @@
     const GITHUB_USERNAME = "uberschlock";
     // -------------------------------------------------------------
 
-    document.getElementById("user-title").innerText = `${GITHUB_USERNAME}.EXE`;
+    document.getElementById("user-title").innerText = `${GITHUB_USERNAME} // Projects`;
 
     async function fetchRepos() {
       const grid = document.getElementById("repo-grid");
@@ -266,11 +245,11 @@
           `https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&sort=updated`
         );
         
-        if (!response.ok) throw new Error("ACCESS_DENIED // USER NOT FOUND");
+        if (!response.ok) throw new Error("Unable to load repositories.");
         
         let repos = await response.json();
 
-        // Exclude forks and the root site repository
+        // Filter out forks and the root site repository
         repos = repos.filter(repo => !repo.fork && repo.name !== `${GITHUB_USERNAME}.github.io`);
 
         loading.style.display = "none";
@@ -294,24 +273,24 @@
                   <a href="${mainTargetUrl}" target="_blank" rel="noopener">${repo.name}</a>
                 </h2>
               </div>
-              <p class="card-desc">${repo.description || "NO DATA DESCRIPTION AVAILABLE."}</p>
+              <p class="card-desc">${repo.description || "No description provided."}</p>
             </div>
 
             <div>
-              <!-- Prominent Retro Action Button -->
+              <!-- Prominent Launch Button -->
               <a class="btn-launch ${hasLiveDemo ? '' : 'btn-secondary'}" 
                  href="${mainTargetUrl}" 
                  target="_blank" 
                  rel="noopener">
-                 ▶ ${hasLiveDemo ? 'EXECUTE PROGRAM' : 'VIEW MATRIX'}
+                 ${hasLiveDemo ? 'Launch Demo ↗' : 'View Project ↗'}
               </a>
 
               <div class="card-footer">
-                <span>${repo.language ? `<span class="badge">[ ${repo.language} ]</span>` : ""}</span>
+                <span>${repo.language ? `<span class="badge">${repo.language}</span>` : ""}</span>
                 
                 <!-- Subtle Secondary Source Code Link -->
                 <a class="github-source-link" href="${repo.html_url}" target="_blank" rel="noopener">
-                  // SOURCE
+                  Source Code ↗
                 </a>
               </div>
             </div>
@@ -321,8 +300,8 @@
         });
 
       } catch (err) {
-        loading.innerText = `[ ERROR: ${err.message} ]`;
-        loading.style.color = "var(--neon-pink)";
+        loading.innerText = `Error: ${err.message}`;
+        loading.style.color = "#ef4444";
       }
     }
 
