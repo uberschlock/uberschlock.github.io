@@ -1,969 +1,355 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon World // Vector Matrix + Area Error Percentages</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        darkBg: '#030712',
-                        neonCyan: '#00f0ff',
-                        neonBlue: '#0088ff',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    }
-                }
-            }
-        }
-    </script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Three.js & Postprocessing CDNs -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
-    <!-- Three.js Fat Lines CDNs -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/lines/LineGeometry.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/lines/LineMaterial.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/lines/LineSegmentsGeometry.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/lines/LineSegments2.js"></script>
-    <!-- D3 v7 & D3-Geo-Projection CDNs -->
-    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-    <script src="https://cdn.jsdelivr.net/npm/d3-geo-projection@4"></script>
-    <style>
-        body {
-            background-color: #030712;
-            color: #f3f4f6;
-            overflow: hidden;
-            font-family: 'Inter', sans-serif;
-        }
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(3, 7, 18, 0.5);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(0, 240, 255, 0.3);
-            border-radius: 2px;
-        }
-        .glow-text {
-            text-shadow: 0 0 10px rgba(0, 240, 255, 0.6), 0 0 20px rgba(0, 136, 255, 0.4);
-        }
-        .glow-box {
-            box-shadow: 0 0 25px rgba(0, 240, 255, 0.15), inset 0 0 15px rgba(0, 240, 255, 0.05);
-        }
-        .glass-pill {
-            background: rgba(3, 7, 18, 0.90);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 240, 255, 0.25);
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Projects & Web Applications</title>
+
+  <!-- Clean Sci-Fi Monospace & Tech Display Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Orbitron:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Glowing Sci-Fi Inline SVG Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2307090e' rx='16'/><polygon points='35,25 75,50 35,75' fill='%2300f3ff'/><path d='M10 10 L30 10 M10 10 L10 30' stroke='%2300f3ff' stroke-width='4' fill='none'/></svg>" type="image/svg+xml">
+
+  <style>
+    :root {
+      --bg-dark: #07090e;
+      --card-bg: rgba(13, 18, 28, 0.85);
+      --neon-cyan: #00f3ff;
+      --neon-indigo: #6366f1;
+      --neon-pink: #ff2a85;
+      --border-cyan: rgba(0, 243, 255, 0.3);
+      --border-hover: #00f3ff;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --grid-line: rgba(0, 243, 255, 0.04);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-dark);
+      background-image: 
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 28px 28px;
+      color: var(--text-main);
+      padding: 3.5rem 1.5rem;
+      max-width: 1150px;
+      margin: 0 auto;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Ultra-Fine 1px Subtle Scanline Overlay */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.22),
+        rgba(0, 0, 0, 0.22) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.5;
+    }
+
+    header {
+      margin-bottom: 3.5rem;
+      text-align: center;
+    }
+
+    header h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(2rem, 4.5vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #ffffff;
+      text-shadow: 0 0 12px rgba(0, 243, 255, 0.4), 0 0 30px rgba(99, 102, 241, 0.2);
+      margin-bottom: 0.6rem;
+    }
+
+    header p {
+      font-family: 'Fira Code', monospace;
+      color: var(--neon-cyan);
+      font-size: 0.95rem;
+      letter-spacing: 1px;
+      text-shadow: 0 0 8px rgba(0, 243, 255, 0.3);
+    }
+
+    #repo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+
+    /* Sci-Fi Angled Frame Card */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-cyan);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      /* Sci-Fi Cut Corners Frame Geometry */
+      clip-path: polygon(
+        0 0, 
+        calc(100% - 16px) 0, 
+        100% 16px, 
+        100% 100%, 
+        16px 100%, 
+        0 calc(100% - 16px)
+      );
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.08);
+    }
+
+    /* Sci-Fi Corner Accent Markers */
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 12px; height: 12px;
+      border-top: 2px solid var(--neon-cyan);
+      border-left: 2px solid var(--neon-cyan);
+      pointer-events: none;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 12px; height: 12px;
+      border-bottom: 2px solid var(--neon-cyan);
+      border-right: 2px solid var(--neon-cyan);
+      pointer-events: none;
+    }
+
+    /* Glowing Hover State */
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--neon-cyan);
+      box-shadow: 
+        0 0 25px rgba(0, 243, 255, 0.35),
+        inset 0 0 15px rgba(0, 243, 255, 0.1);
+    }
+
+    .card-header {
+      margin-bottom: 0.75rem;
+    }
+
+    .card-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    /* Title Link with Subtle Glow */
+    .card-title a {
+      color: #ffffff;
+      text-decoration: none;
+      transition: color 0.2s, text-shadow 0.2s;
+    }
+
+    .card:hover .card-title a {
+      color: var(--neon-cyan);
+      text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+    }
+
+    .card-desc {
+      font-size: 0.925rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-bottom: 1.5rem;
+      flex-grow: 1;
+    }
+
+    /* Prominent Sci-Fi Action Button */
+    .btn-launch {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(0, 243, 255, 0.15), rgba(99, 102, 241, 0.25));
+      border: 1px solid var(--neon-cyan);
+      color: #ffffff;
+      padding: 0.7rem 1rem;
+      font-family: 'Fira Code', monospace;
+      font-weight: 600;
+      font-size: 0.875rem;
+      letter-spacing: 0.5px;
+      text-decoration: none;
+      margin-bottom: 1.1rem;
+      transition: all 0.25s ease;
+      /* Clipped button frame */
+      clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+      box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+    }
+
+    .btn-launch:hover {
+      background: var(--neon-cyan);
+      color: #04060a;
+      font-weight: 700;
+      box-shadow: 0 0 20px rgba(0, 243, 255, 0.7);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.03);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: var(--text-muted);
+      box-shadow: none;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: #ffffff;
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+    }
+
+    /* Footer Meta Info & Secondary Source Link */
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      border-top: 1px dashed var(--border-cyan);
+      padding-top: 0.85rem;
+      font-family: 'Fira Code', monospace;
+    }
+
+    .badge {
+      display: inline-block;
+      color: var(--neon-cyan);
+      background: rgba(0, 243, 255, 0.08);
+      border: 1px solid rgba(0, 243, 255, 0.3);
+      padding: 0.15rem 0.55rem;
+      border-radius: 2px;
+      font-size: 0.725rem;
+    }
+
+    /* Subtle Secondary Source Link */
+    .github-source-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s, text-shadow 0.2s;
+    }
+
+    .github-source-link:hover {
+      color: var(--neon-cyan);
+      text-shadow: 0 0 6px rgba(0, 243, 255, 0.4);
+    }
+
+    #loading {
+      text-align: center;
+      font-family: 'Fira Code', monospace;
+      font-size: 1.1rem;
+      color: var(--neon-cyan);
+      text-shadow: 0 0 10px rgba(0, 243, 255, 0.4);
+      margin-top: 4rem;
+    }
+  </style>
 </head>
-<body class="w-screen h-screen relative select-none">
+<body>
 
-    <div id="webgl-container" class="absolute inset-0 z-0"></div>
+  <header>
+    <h1 id="user-title">Projects</h1>
+    <p>Live Web Applications & Software Repositories</p>
+  </header>
 
-    <!-- Country Percentage Labels Overlay -->
-    <div id="labels-container" class="absolute inset-0 z-15 pointer-events-none overflow-hidden"></div>
+  <div id="loading">Initializing Repository Directory...</div>
+  <div id="repo-grid"></div>
 
-    <!-- UI Overlay Layer -->
-    <div class="absolute inset-0 z-20 pointer-events-none flex flex-col justify-between p-3 sm:p-4">
+  <script>
+    // -------------------------------------------------------------
+    // REPLACE THIS WITH YOUR GITHUB USERNAME:
+    const GITHUB_USERNAME = "uberschlock";
+    // -------------------------------------------------------------
+
+    document.getElementById("user-title").innerText = `${GITHUB_USERNAME} // Projects`;
+
+    async function fetchRepos() {
+      const grid = document.getElementById("repo-grid");
+      const loading = document.getElementById("loading");
+
+      try {
+        const response = await fetch(
+          `https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&sort=updated`
+        );
         
-        <header class="pointer-events-auto w-full max-w-5xl mx-auto flex items-center justify-between glass-pill rounded-full px-4 py-2 shadow-2xl">
-            <div class="flex items-center space-x-2.5">
-                <div class="w-7 h-7 rounded-full bg-cyan-950/80 border border-cyan-400/50 flex items-center justify-center glow-box">
-                    <i class="fa-solid fa-globe text-cyan-400 text-xs animate-pulse"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold tracking-wider text-xs sm:text-sm text-cyan-300 glow-text">NEON WORLD // VECTOR MATRIX</h1>
-                    <p class="text-[9px] text-cyan-500/80 font-mono">STATUS: LIGHTWEIGHT RENDER ENGINE ACTIVE</p>
-                </div>
-            </div>
-            <div class="flex items-center space-x-2">
-                <div class="flex items-center space-x-2 bg-cyan-950/40 border border-cyan-500/30 px-3 py-1 rounded-full font-mono text-[10px] text-cyan-200">
-                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
-                    <span id="status-display">MODE: 3D GLOBE</span>
-                </div>
-            </div>
-        </header>
+        if (!response.ok) throw new Error("Unable to load repositories.");
+        
+        let repos = await response.json();
 
-        <div class="pointer-events-auto w-full max-w-4xl mx-auto glass-pill rounded-2xl p-2.5 shadow-2xl flex flex-col gap-2 mb-1">
-            
-            <!-- Projection Selector Buttons -->
-            <div class="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-11 gap-1">
-                <button onclick="setProjection('globe')" id="btn-globe" class="proj-btn px-1.5 py-1.5 rounded-xl font-mono text-[9px] font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-400/50 hover:bg-cyan-500/30 transition-all shadow-[0_0_12px_rgba(0,240,255,0.2)]">
-                    <i class="fa-solid fa-earth-americas block mb-0.5 text-xs"></i> Globe
-                </button>
-                <button onclick="setProjection('equirectangular')" id="btn-equirectangular" class="proj-btn px-1.5 py-1.5 rounded-xl font-mono text-[9px] font-semibold bg-slate-900/70 text-cyan-400/70 border border-cyan-500/20 hover:bg-cyan-500/10 transition-all">
-                    <i class="fa-solid fa-map block mb-0.5 text-xs"></i> Equirect.
-                </button>
-                <button onclick="setProjection('mercator')" id="btn-mercator" class="proj-btn px-1.5 py-1.5 rounded-xl font-mono text-[9px] font-semibold bg-slate-900/70 text-cyan-400/70 border border-cyan-500/20 hover:bg-cyan-500/10 transition-all">
-                    <i class="fa-solid fa-compass-drafting block mb-0.5 text-xs"></i> Mercator
-                </button>
-                <button onclick="setProjection('robinson')" id="btn-robinson" class="proj-btn px-1.5 py-1.5 rounded-xl font-mono text-[9px] font-semibold bg-slate-900/70 text-cyan-400/70 border border-cyan-500/20 hover:bg-cyan-500/10 transition-all">
-                    <i class="fa-solid fa-circle-nodes block mb-0.5 text-xs"></i> Robinson
-                </button>
-                <button onclick="setProjection('orthographic')" id="btn-orthographic" class="proj-btn px-1.5 py-1.5 rounded-xl font-mono text-[9px] font-semibold bg-slate-900/70 text-cyan-400/70 border border-cyan-500/20 hover:bg-cyan-500/10 transition-all">
-                    <i class="fa-solid fa-circle-dot block mb-0.5 text-xs"></i> Ortho
-                </button>
-                <button onclick="setProjection('stereographic')" id="btn-stereographic" class="proj-btn px-1.5 py-1.5 rounded-xl font-mono text-[9px] font-semibold bg-slate-900/70 text-cyan-400/70 border border-cyan-500/20 hover:bg-cyan-500/10 transition-all">
-                    <i class="fa-solid fa-bullseye block mb-0.5 text-xs"></i> Stereo
-                </button>
-                <button onclick="setProjection('homolosine')" id="btn-homolosine" class="proj-btn px-1.5 py-1.5 rounded-xl font-mono text-[9px] font-semibold bg-slate-900/70 text-cyan-400/70 border border-cyan-500/20 hover:bg-cyan-500/10 transition-all">
-                    <i class="fa-solid fa-shapes block mb-0.5 text-xs"></i> Goode H.
-                </button>
-                <button onclick="setProjection('dymaxion')" id="btn-dymaxion" class="proj-btn px-1.5 py-1.5 rounded-xl font-mono text-[9px] font-semibold bg-slate-900/70 text-cyan-400/70 border border-cyan-500/20 hover:bg-cyan-500/10 transition-all">
-                    <i class="fa-solid fa-dice-d20 block mb-0.5 text-xs"></i> Dymaxion
-                </button>
-                <button onclick="setProjection('winkel3')" id="btn-winkel3" class="proj-btn px-1.5 py-1.5 rounded-xl font-mono text-[9px] font-semibold bg-slate-900/70 text-cyan-400/70 border border-cyan-500/20 hover:bg-cyan-500/10 transition-all">
-                    <i class="fa-solid fa-layer-group block mb-0.5 text-xs"></i> Winkel III
-                </button>
-                <button onclick="setProjection('mollweide')" id="btn-mollweide" class="proj-btn px-1.5 py-1.5 rounded-xl font-mono text-[9px] font-semibold bg-slate-900/70 text-cyan-400/70 border border-cyan-500/20 hover:bg-cyan-500/10 transition-all">
-                    <i class="fa-solid fa-egg block mb-0.5 text-xs"></i> Mollweide
-                </button>
-                <button onclick="setProjection('aitoff')" id="btn-aitoff" class="proj-btn px-1.5 py-1.5 rounded-xl font-mono text-[9px] font-semibold bg-slate-900/70 text-cyan-400/70 border border-cyan-500/20 hover:bg-cyan-500/10 transition-all">
-                    <i class="fa-solid fa-orbit block mb-0.5 text-xs"></i> Aitoff
-                </button>
+        // Exclude forks and the root site repository
+        repos = repos.filter(repo => !repo.fork && repo.name !== `${GITHUB_USERNAME}.github.io`);
+
+        loading.style.display = "none";
+
+        repos.forEach(repo => {
+          const card = document.createElement("div");
+          card.className = "card";
+
+          // Determine Live Demo Link (GitHub Pages or Custom Homepage URL)
+          const liveUrl = repo.has_pages 
+            ? `https://${GITHUB_USERNAME}.github.io/${repo.name}` 
+            : repo.homepage;
+
+          const mainTargetUrl = liveUrl || repo.html_url;
+          const hasLiveDemo = Boolean(liveUrl);
+
+          card.innerHTML = `
+            <div>
+              <div class="card-header">
+                <h2 class="card-title">
+                  <a href="${mainTargetUrl}" target="_blank" rel="noopener">${repo.name}</a>
+                </h2>
+              </div>
+              <p class="card-desc">${repo.description || "No description provided."}</p>
             </div>
 
-            <!-- Secondary Controls & Pixel Filter Slider & Area Error Toggle -->
-            <div class="flex flex-wrap items-center justify-between pt-1.5 border-t border-cyan-500/15 gap-3">
-                <div class="flex items-center space-x-2">
-                    <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
-                    <span class="text-[10px] font-mono text-cyan-300">MATRIX ENGINE ACTIVE</span>
-                </div>
+            <div>
+              <!-- Prominent Action Button -->
+              <a class="btn-launch ${hasLiveDemo ? '' : 'btn-secondary'}" 
+                 href="${mainTargetUrl}" 
+                 target="_blank" 
+                 rel="noopener">
+                 ${hasLiveDemo ? 'Launch Demo ↗' : 'View Project ↗'}
+              </a>
 
-                <div class="flex items-center space-x-2">
-                    <!-- Area Error Toggle Button -->
-                    <button onclick="toggleAreaError()" id="btn-area-error" class="px-2.5 py-1 rounded-lg font-mono text-[9px] bg-cyan-950/80 border border-cyan-500/30 hover:border-cyan-400 text-cyan-300 transition-all flex items-center space-x-1">
-                        <i class="fa-solid fa-chart-pie"></i> <span>Area Error: OFF</span>
-                    </button>
-
-                    <!-- Pixel Size Slider (Max 8px) -->
-                    <div class="flex items-center space-x-2 bg-cyan-950/40 border border-cyan-500/30 px-3 py-1 rounded-xl">
-                        <i class="fa-solid fa-table-cells text-cyan-400 text-xs"></i>
-                        <span class="text-[10px] font-mono text-cyan-300">Pixel Size:</span>
-                        <input type="range" id="pixel-size-slider" min="1" max="8" step="1" value="1" oninput="updatePixelSize(this.value)" class="w-20 accent-cyan-400 bg-cyan-950/60 cursor-pointer">
-                        <span id="pixel-size-val" class="text-[10px] font-mono text-cyan-400 w-6 text-right">1px</span>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-
-    <script>
-        let scene, camera, renderer, composer;
-        let pixelPass;
-        let lineSegmentsMesh, graticuleSegmentsMesh;
-        let lineGeometry, graticuleGeometry;
-        let lineMaterial, graticuleMaterial;
-        let fillMesh, fillGeometry;
-
-        let segmentData = []; 
-        let totalSegmentsCount = 0;
-
-        let graticuleData = [];
-        let totalGraticuleSegmentsCount = 0;
-        let fillVertexData = [];
-        let countryLabels = [];
-
-        let currentProjName = 'globe';
-        let targetProjName = 'globe';
-        let projTransitionProgress = 1.0;
-
-        let startCameraZ = 13.5;
-        let targetCameraZ = 13.5;
-
-        let showAreaError = false;
-
-        const R = 4.0;
-        const d3Scale = 205; 
-        const scaleFactor = 0.024;
-
-        // D3 Projection definitions
-        const d3Projections = {
-            equirectangular: d3.geoEquirectangular().scale(d3Scale).translate([0, 0]),
-            mercator: d3.geoMercator().scale(d3Scale * 0.78).translate([0, 0]),
-            robinson: d3.geoRobinson().scale(d3Scale * 0.82).translate([0, 0]),
-            orthographic: d3.geoOrthographic().scale(d3Scale * 1.1).translate([0, 0]),
-            stereographic: d3.geoStereographic().scale(d3Scale * 0.52).translate([0, 0]),
-            homolosine: d3.geoHomolosine().scale(d3Scale * 0.78).translate([0, 0]),
-            dymaxion: typeof d3.geoDymaxion === 'function' ? d3.geoDymaxion().scale(d3Scale * 0.72).translate([0, 0]) : d3.geoEquirectangular().scale(d3Scale).translate([0, 0]),
-            winkel3: typeof d3.geoWinkel3 === 'function' ? d3.geoWinkel3().scale(d3Scale * 0.78).translate([0, 0]) : d3.geoRobinson().scale(d3Scale * 0.82).translate([0, 0]),
-            mollweide: d3.geoMollweide().scale(d3Scale * 0.82).translate([0, 0]),
-            aitoff: d3.geoAitoff().scale(d3Scale * 0.82).translate([0, 0])
-        };
-
-        function getOptimalCameraZ(projName) {
-            let baseZ = 13.5;
-            switch(projName) {
-                case 'globe': baseZ = 13.5; break;
-                case 'equirectangular': baseZ = 19.0; break;
-                case 'mercator': baseZ = 20.5; break;
-                case 'robinson': baseZ = 19.5; break;
-                case 'orthographic': baseZ = 13.5; break;
-                case 'stereographic': baseZ = 21.0; break;
-                case 'homolosine': baseZ = 20.0; break;
-                case 'dymaxion': baseZ = 20.0; break;
-                case 'winkel3': baseZ = 19.5; break;
-                case 'mollweide': baseZ = 19.5; break;
-                case 'aitoff': baseZ = 19.5; break;
-            }
-            const aspect = window.innerWidth / window.innerHeight;
-            if (aspect < 1.0 && projName !== 'globe' && projName !== 'orthographic') {
-                baseZ = baseZ * (1.35 / aspect);
-            } else if (projName !== 'globe' && projName !== 'orthographic') {
-                baseZ = baseZ * 1.15;
-            }
-            return baseZ;
-        }
-
-        function toggleAreaError() {
-            showAreaError = !showAreaError;
-            const btn = document.getElementById('btn-area-error');
-            if (showAreaError) {
-                btn.className = "px-2.5 py-1 rounded-lg font-mono text-[9px] bg-amber-500/30 border border-amber-400 text-amber-300 transition-all flex items-center space-x-1 shadow-[0_0_12px_rgba(255,170,0,0.3)]";
-                btn.innerHTML = `<i class="fa-solid fa-chart-pie"></i> <span>Area Error: ON</span>`;
-            } else {
-                btn.className = "px-2.5 py-1 rounded-lg font-mono text-[9px] bg-cyan-950/80 border border-cyan-500/30 hover:border-cyan-400 text-cyan-300 transition-all flex items-center space-x-1";
-                btn.innerHTML = `<i class="fa-solid fa-chart-pie"></i> <span>Area Error: OFF</span>`;
-                countryLabels.forEach(l => l.element.classList.add('hidden'));
-            }
-        }
-
-        function getAreaDistortion(projName, lat) {
-            if (projName === 'globe' || projName === 'orthographic' || projName === 'mollweide' || projName === 'homolosine') {
-                return 0.0;
-            }
-            const absLat = Math.abs(lat);
-            if (projName === 'mercator') {
-                const cosL = Math.max(0.05, Math.cos(lat));
-                const scale = 1.0 / (cosL * cosL);
-                return Math.min(10.0, scale - 1.0);
-            } else if (projName === 'equirectangular') {
-                return 1.0 - Math.cos(lat);
-            } else if (projName === 'stereographic') {
-                const sinL = Math.sin(lat);
-                const scale = Math.pow(2.0 / (1.0 + Math.abs(sinL)), 2);
-                return Math.min(10.0, Math.abs(scale - 1.0));
-            } else if (projName === 'robinson' || projName === 'winkel3' || projName === 'aitoff' || projName === 'dymaxion') {
-                const latDist = Math.pow(absLat / (Math.PI / 2), 2);
-                return latDist * 1.5;
-            }
-            return absLat / (Math.PI / 2);
-        }
-
-        function initThree() {
-            const container = document.getElementById('webgl-container');
-            
-            scene = new THREE.Scene();
-            scene.background = new THREE.Color('#030712');
-            scene.fog = new THREE.FogExp2('#030712', 0.02);
-
-            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-            targetCameraZ = getOptimalCameraZ('globe');
-            camera.position.set(0, 0, targetCameraZ);
-            startCameraZ = targetCameraZ;
-
-            renderer = new THREE.WebGLRenderer({ 
-                antialias: false, 
-                alpha: true,
-                powerPreference: 'high-performance'
-            });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-            renderer.toneMapping = THREE.ACESFilmicToneMapping;
-            container.appendChild(renderer.domElement);
-
-            composer = new THREE.EffectComposer(renderer);
-            const renderPass = new THREE.RenderPass(scene, camera);
-            composer.addPass(renderPass);
-
-            const PixelShader = {
-                uniforms: {
-                    "tDiffuse": { value: null },
-                    "resolution": { value: new THREE.Vector2(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio) },
-                    "pixelSize": { value: 1.0 }
-                },
-                vertexShader: `
-                    varying vec2 vUv;
-                    void main() {
-                        vUv = uv;
-                        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-                    }
-                `,
-                fragmentShader: `
-                    uniform sampler2D tDiffuse;
-                    uniform vec2 resolution;
-                    uniform float pixelSize;
-                    varying vec2 vUv;
-
-                    void main() {
-                        if (pixelSize <= 1.0) {
-                            gl_FragColor = texture2D(tDiffuse, vUv);
-                        } else {
-                            vec2 dxy = pixelSize / resolution;
-                            vec2 coord = dxy * floor(vUv / dxy + 0.5);
-                            vec4 col = texture2D(tDiffuse, coord);
-                            gl_FragColor = col;
-                        }
-                    }
-                `
-            };
-
-            pixelPass = new THREE.ShaderPass(PixelShader);
-            composer.addPass(pixelPass);
-
-            loadWorldData();
-
-            window.addEventListener('resize', onWindowResize);
-
-            animate();
-        }
-
-        function updatePixelSize(val) {
-            const size = parseFloat(val);
-            document.getElementById('pixel-size-val').innerText = size + 'px';
-            if (pixelPass) {
-                pixelPass.uniforms['pixelSize'].value = size;
-            }
-            if (lineMaterial) {
-                lineMaterial.linewidth = Math.max(1.0, size * 0.9);
-            }
-            if (graticuleMaterial) {
-                graticuleMaterial.linewidth = Math.max(0.75, size * 0.6);
-            }
-        }
-
-        function computeGlobeVector(lon, lat) {
-            const cosLat = Math.cos(lat);
-            return new THREE.Vector3(
-                R * cosLat * Math.sin(lon),
-                R * Math.sin(lat),
-                R * cosLat * Math.cos(lon)
-            );
-        }
-
-        function computeVectorForProj(projName, lon, lat) {
-            if (projName === 'globe') {
-                return computeGlobeVector(lon, lat);
-            }
-            const proj = d3Projections[projName] || d3Projections.equirectangular;
-
-            let lonDeg = lon * 180 / Math.PI;
-            while (lonDeg > 180) lonDeg -= 360;
-            while (lonDeg < -180) lonDeg += 360;
-
-            const latDeg = lat * 180 / Math.PI;
-            const pt = proj([lonDeg, latDeg]);
-
-            if (!pt || isNaN(pt[0]) || isNaN(pt[1])) {
-                return computeGlobeVector(lon, lat);
-            }
-            return new THREE.Vector3(pt[0] * scaleFactor, -pt[1] * scaleFactor, 0);
-        }
-
-        function loadWorldData() {
-            const geojsonUrl = 'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_countries.geojson';
-            
-            fetch(geojsonUrl)
-                .then(res => res.json())
-                .then(data => {
-                    parseGeoJSONToSegments(data);
-                    parseGeoJSONToMeshes(data);
-                    buildCountryLabels(data);
-                    buildLineMesh();
-                    buildGraticuleData();
-                })
-                .catch(err => {
-                    console.warn("Falling back to 110m dataset due to network error:", err);
-                    fetch('https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson')
-                        .then(res => res.json())
-                        .then(data => {
-                            parseGeoJSONToSegments(data);
-                            parseGeoJSONToMeshes(data);
-                            buildCountryLabels(data);
-                            buildLineMesh();
-                            buildGraticuleData();
-                        });
-                });
-        }
-
-        function buildCountryLabels(geojson) {
-            countryLabels = [];
-            const container = document.getElementById('labels-container');
-
-            geojson.features.forEach(feat => {
-                const geom = feat.geometry;
-                if (!geom) return;
+              <div class="card-footer">
+                <span>${repo.language ? `<span class="badge">${repo.language}</span>` : ""}</span>
                 
-                let ring = null;
-                if (geom.type === 'Polygon' && geom.coordinates.length > 0) {
-                    ring = geom.coordinates[0];
-                } else if (geom.type === 'MultiPolygon' && geom.coordinates.length > 0 && geom.coordinates[0].length > 0) {
-                    ring = geom.coordinates[0][0];
-                }
-                if (!ring || ring.length === 0) return;
-
-                let sumLon = 0, sumLat = 0;
-                ring.forEach(p => {
-                    sumLon += p[0];
-                    sumLat += p[1];
-                });
-                const centerLon = (sumLon / ring.length) * Math.PI / 180;
-                const centerLat = (sumLat / ring.length) * Math.PI / 180;
-
-                const globeV = computeGlobeVector(centerLon, centerLat);
-
-                const el = document.createElement('div');
-                el.className = 'absolute font-mono text-[9px] font-bold px-1.5 py-0.5 rounded pointer-events-none hidden transition-opacity duration-150';
-                container.appendChild(el);
-
-                countryLabels.push({
-                    lon: centerLon,
-                    lat: centerLat,
-                    globe: globeV.clone(),
-                    current: globeV.clone(),
-                    start: globeV.clone(),
-                    target: globeV.clone(),
-                    element: el
-                });
-            });
-        }
-
-        function parseGeoJSONToSegments(geojson) {
-            segmentData = [];
-
-            function processRing(ring) {
-                for (let i = 0; i < ring.length - 1; i++) {
-                    const p1 = ring[i];
-                    const p2 = ring[i+1];
-
-                    let lon1 = p1[0] * Math.PI / 180;
-                    const lat1 = p1[1] * Math.PI / 180;
-                    let lon2 = p2[0] * Math.PI / 180;
-                    const lat2 = p2[1] * Math.PI / 180;
-
-                    let dLon = lon2 - lon1;
-                    if (dLon > Math.PI) {
-                        lon2 -= 2 * Math.PI;
-                    } else if (dLon < -Math.PI) {
-                        lon2 += 2 * Math.PI;
-                    }
-
-                    const dist = Math.hypot(lon2 - lon1, lat2 - lat1);
-                    const steps = Math.max(1, Math.ceil(dist / 0.025));
-
-                    for (let s = 0; s < steps; s++) {
-                        const t1 = s / steps;
-                        const t2 = (s + 1) / steps;
-                        const subLon1 = lon1 + (lon2 - lon1) * t1;
-                        const subLat1 = lat1 + (lat2 - lat1) * t1;
-                        const subLon2 = lon1 + (lon2 - lon1) * t2;
-                        const subLat2 = lat1 + (lat2 - lat1) * t2;
-
-                        addSegment(subLon1, subLat1, subLon2, subLat2);
-                    }
-                }
-            }
-
-            geojson.features.forEach(feat => {
-                const geom = feat.geometry;
-                if (!geom) return;
-                if (geom.type === 'Polygon') {
-                    geom.coordinates.forEach(ring => processRing(ring));
-                } else if (geom.type === 'MultiPolygon') {
-                    geom.coordinates.forEach(poly => {
-                        poly.forEach(ring => processRing(ring));
-                    });
-                }
-            });
-
-            totalSegmentsCount = segmentData.length;
-        }
-
-        function addSegment(lon1, lat1, lon2, lat2) {
-            const v1 = computeGlobeVector(lon1, lat1);
-            const v2 = computeGlobeVector(lon2, lat2);
-
-            segmentData.push({
-                lon1, lat1, lon2, lat2,
-                globe1: v1.clone(), globe2: v2.clone(),
-                start1: v1.clone(), start2: v2.clone(),
-                target1: v1.clone(), target2: v2.clone(),
-                current1: v1.clone(), current2: v2.clone()
-            });
-        }
-
-        function parseGeoJSONToMeshes(geojson) {
-            fillVertexData = [];
-
-            function processPolygon(polygonCoords) {
-                if (!polygonCoords || polygonCoords.length === 0) return;
-                const outerRing = polygonCoords[0];
-                const holes = polygonCoords.slice(1);
-
-                const contour2D = outerRing.map(p => new THREE.Vector2(p[0], p[1]));
-                const holes2D = holes.map(hole => hole.map(p => new THREE.Vector2(p[0], p[1])));
-
-                const allPoints = [...contour2D];
-                holes2D.forEach(hole => {
-                    allPoints.push(...hole);
-                });
-
-                const triangles = THREE.ShapeUtils.triangulateShape(contour2D, holes2D);
-                if (!triangles) return;
-
-                triangles.forEach(tri => {
-                    tri.forEach(idx => {
-                        const pt = allPoints[idx];
-                        const lon = pt.x * Math.PI / 180;
-                        const lat = pt.y * Math.PI / 180;
-                        const globeV = computeGlobeVector(lon, lat);
-
-                        fillVertexData.push({
-                            lon, lat,
-                            globe: globeV.clone(),
-                            current: globeV.clone(),
-                            start: globeV.clone(),
-                            target: globeV.clone()
-                        });
-                    });
-                });
-            }
-
-            geojson.features.forEach(feat => {
-                const geom = feat.geometry;
-                if (!geom) return;
-                if (geom.type === 'Polygon') {
-                    processPolygon(geom.coordinates);
-                } else if (geom.type === 'MultiPolygon') {
-                    geom.coordinates.forEach(poly => processPolygon(poly));
-                }
-            });
-
-            fillGeometry = new THREE.BufferGeometry();
-            const posAttr = new Float32Array(fillVertexData.length * 3);
-            const colAttr = new Float32Array(fillVertexData.length * 3);
-
-            fillGeometry.setAttribute('position', new THREE.BufferAttribute(posAttr, 3));
-            fillGeometry.setAttribute('color', new THREE.BufferAttribute(colAttr, 3));
-
-            const fillMaterial = new THREE.MeshBasicMaterial({
-                vertexColors: true,
-                transparent: true,
-                opacity: 0.25,
-                side: THREE.DoubleSide,
-                blending: THREE.AdditiveBlending,
-                depthWrite: false
-            });
-
-            fillMesh = new THREE.Mesh(fillGeometry, fillMaterial);
-            scene.add(fillMesh);
-            updateFillBuffers();
-        }
-
-        function buildGraticuleData() {
-            graticuleData = [];
-            const graticuleGeo = d3.geoGraticule().step([5, 5])();
-
-            function processCoords(coords) {
-                for (let i = 0; i < coords.length - 1; i++) {
-                    const p1 = coords[i];
-                    const p2 = coords[i+1];
-
-                    let lon1 = p1[0] * Math.PI / 180;
-                    const lat1 = p1[1] * Math.PI / 180;
-                    let lon2 = p2[0] * Math.PI / 180;
-                    const lat2 = p2[1] * Math.PI / 180;
-
-                    let dLon = lon2 - lon1;
-                    if (dLon > Math.PI) {
-                        lon2 -= 2 * Math.PI;
-                    } else if (dLon < -Math.PI) {
-                        lon2 += 2 * Math.PI;
-                    }
-
-                    const dist = Math.hypot(lon2 - lon1, lat2 - lat1);
-                    const steps = Math.max(1, Math.ceil(dist / 0.04));
-
-                    for (let s = 0; s < steps; s++) {
-                        const t1 = s / steps;
-                        const t2 = (s + 1) / steps;
-                        const subLon1 = lon1 + (lon2 - lon1) * t1;
-                        const subLat1 = lat1 + (lat2 - lat1) * t1;
-                        const subLon2 = lon1 + (lon2 - lon1) * t2;
-                        const subLat2 = lat1 + (lat2 - lat1) * t2;
-
-                        const v1 = computeGlobeVector(subLon1, subLat1);
-                        const v2 = computeGlobeVector(subLon2, subLat2);
-
-                        graticuleData.push({
-                            lon1: subLon1, lat1: subLat1, lon2: subLon2, lat2: subLat2,
-                            globe1: v1.clone(), globe2: v2.clone(),
-                            start1: v1.clone(), start2: v2.clone(),
-                            target1: v1.clone(), target2: v2.clone(),
-                            current1: v1.clone(), current2: v2.clone()
-                        });
-                    }
-                }
-            }
-
-            graticuleGeo.coordinates.forEach(coords => processCoords(coords));
-            totalGraticuleSegmentsCount = graticuleData.length;
-
-            buildGraticuleMesh();
-        }
-
-        function buildGraticuleMesh() {
-            const positions = new Float32Array(totalGraticuleSegmentsCount * 6);
-            const colors = new Float32Array(totalGraticuleSegmentsCount * 6);
-            
-            graticuleGeometry = new THREE.LineSegmentsGeometry();
-            graticuleGeometry.setPositions(positions);
-            graticuleGeometry.setColors(colors);
-
-            graticuleMaterial = new THREE.LineMaterial({
-                vertexColors: true,
-                transparent: true,
-                opacity: 0.8,
-                linewidth: 0.75,
-                resolution: new THREE.Vector2(window.innerWidth, window.innerHeight),
-                blending: THREE.AdditiveBlending
-            });
-
-            graticuleSegmentsMesh = new THREE.LineSegments2(graticuleGeometry, graticuleMaterial);
-            scene.add(graticuleSegmentsMesh);
-            updateGeometryBuffers();
-        }
-
-        function buildLineMesh() {
-            const positions = new Float32Array(totalSegmentsCount * 6);
-            const colors = new Float32Array(totalSegmentsCount * 6);
-
-            lineGeometry = new THREE.LineSegmentsGeometry();
-            lineGeometry.setPositions(positions);
-            lineGeometry.setColors(colors);
-
-            lineMaterial = new THREE.LineMaterial({
-                vertexColors: true,
-                transparent: true,
-                opacity: 0.95,
-                linewidth: 1.0,
-                resolution: new THREE.Vector2(window.innerWidth, window.innerHeight),
-                blending: THREE.AdditiveBlending
-            });
-
-            lineSegmentsMesh = new THREE.LineSegments2(lineGeometry, lineMaterial);
-            scene.add(lineSegmentsMesh);
-
-            updateGeometryBuffers();
-        }
-
-        function updateGeometryBuffers() {
-            const camDir = new THREE.Vector3(0, 0, 1);
-
-            const colCyan = new THREE.Color('#00f0ff');
-            const colBlue = new THREE.Color('#0088ff');
-            const gratBaseCol = new THREE.Color('#006688');
-
-            const errLow = new THREE.Color('#00f0ff');
-            const errMid = new THREE.Color('#ffaa00');
-            const errHigh = new THREE.Color('#ff0044');
-
-            if (lineGeometry && totalSegmentsCount > 0) {
-                const positions = new Float32Array(totalSegmentsCount * 6);
-                const colors = new Float32Array(totalSegmentsCount * 6);
-
-                for (let i = 0; i < totalSegmentsCount; i++) {
-                    const seg = segmentData[i];
-
-                    seg.current1.lerpVectors(seg.start1, seg.target1, projTransitionProgress);
-                    seg.current2.lerpVectors(seg.start2, seg.target2, projTransitionProgress);
-
-                    positions[i * 6 + 0] = seg.current1.x;
-                    positions[i * 6 + 1] = seg.current1.y;
-                    positions[i * 6 + 2] = seg.current1.z;
-                    positions[i * 6 + 3] = seg.current2.x;
-                    positions[i * 6 + 4] = seg.current2.y;
-                    positions[i * 6 + 5] = seg.current2.z;
-
-                    const n1 = new THREE.Vector3(seg.globe1.x, seg.globe1.y, seg.globe1.z).normalize();
-                    const n2 = new THREE.Vector3(seg.globe2.x, seg.globe2.y, seg.globe2.z).normalize();
-                    
-                    let dot1 = n1.dot(camDir);
-                    let dot2 = n2.dot(camDir);
-
-                    let isGlobeMode = (currentProjName === 'globe' && targetProjName === 'globe' && projTransitionProgress > 0.99);
-                    let intensity1 = isGlobeMode ? THREE.MathUtils.lerp(0.06, 1.0, THREE.MathUtils.smoothstep(dot1, -0.15, 0.15)) : 1.0;
-                    let intensity2 = isGlobeMode ? THREE.MathUtils.lerp(0.06, 1.0, THREE.MathUtils.smoothstep(dot2, -0.15, 0.15)) : 1.0;
-
-                    let c1 = new THREE.Color();
-                    let c2 = new THREE.Color();
-
-                    if (showAreaError && projTransitionProgress > 0.95) {
-                        const lat1 = (seg.lat1 + seg.lat2) * 0.5;
-                        const dist1 = getAreaDistortion(targetProjName, lat1);
-                        if (dist1 <= 1.0) {
-                            c1.lerpColors(errLow, errMid, dist1);
-                        } else {
-                            let t = Math.min(1.0, (dist1 - 1.0) / 4.0);
-                            c1.lerpColors(errMid, errHigh, t);
-                        }
-                        c2.copy(c1);
-                    } else {
-                        c1 = (i % 2 === 0) ? colCyan : colBlue;
-                        c2 = c1;
-                    }
-
-                    colors[i * 6 + 0] = c1.r * intensity1;
-                    colors[i * 6 + 1] = c1.g * intensity1;
-                    colors[i * 6 + 2] = c1.b * intensity1;
-                    colors[i * 6 + 3] = c2.r * intensity2;
-                    colors[i * 6 + 4] = c2.g * intensity2;
-                    colors[i * 6 + 5] = c2.b * intensity2;
-                }
-                lineGeometry.setPositions(positions);
-                lineGeometry.setColors(colors);
-            }
-
-            if (graticuleGeometry && totalGraticuleSegmentsCount > 0) {
-                const gratPositions = new Float32Array(totalGraticuleSegmentsCount * 6);
-                const gratColors = new Float32Array(totalGraticuleSegmentsCount * 6);
-
-                for (let i = 0; i < totalGraticuleSegmentsCount; i++) {
-                    const seg = graticuleData[i];
-
-                    seg.current1.lerpVectors(seg.start1, seg.target1, projTransitionProgress);
-                    seg.current2.lerpVectors(seg.start2, seg.target2, projTransitionProgress);
-
-                    gratPositions[i * 6 + 0] = seg.current1.x;
-                    gratPositions[i * 6 + 1] = seg.current1.y;
-                    gratPositions[i * 6 + 2] = seg.current1.z;
-                    gratPositions[i * 6 + 3] = seg.current2.x;
-                    gratPositions[i * 6 + 4] = seg.current2.y;
-                    gratPositions[i * 6 + 5] = seg.current2.z;
-
-                    const n1 = new THREE.Vector3(seg.globe1.x, seg.globe1.y, seg.globe1.z).normalize();
-                    const n2 = new THREE.Vector3(seg.globe2.x, seg.globe2.y, seg.globe2.z).normalize();
-                    
-                    let dot1 = n1.dot(camDir);
-                    let dot2 = n2.dot(camDir);
-
-                    let isGlobeMode = (currentProjName === 'globe' && targetProjName === 'globe' && projTransitionProgress > 0.99);
-                    let intensity1 = isGlobeMode ? THREE.MathUtils.lerp(0.04, 0.86, THREE.MathUtils.smoothstep(dot1, -0.15, 0.15)) : 0.86;
-                    let intensity2 = isGlobeMode ? THREE.MathUtils.lerp(0.04, 0.86, THREE.MathUtils.smoothstep(dot2, -0.15, 0.15)) : 0.86;
-
-                    let gc = gratBaseCol;
-
-                    gratColors[i * 6 + 0] = gc.r * intensity1;
-                    gratColors[i * 6 + 1] = gc.g * intensity1;
-                    gratColors[i * 6 + 2] = gc.b * intensity1;
-                    gratColors[i * 6 + 3] = gc.r * intensity2;
-                    gratColors[i * 6 + 4] = gc.g * intensity2;
-                    gratColors[i * 6 + 5] = gc.b * intensity2;
-                }
-                graticuleGeometry.setPositions(gratPositions);
-                graticuleGeometry.setColors(gratColors);
-            }
-
-            updateFillBuffers();
-            updateLabels();
-        }
-
-        function updateFillBuffers() {
-            if (!fillGeometry || fillVertexData.length === 0) return;
-            const posAttr = fillGeometry.attributes.position;
-            const colAttr = fillGeometry.attributes.color;
-
-            const baseFillCol = new THREE.Color('#00f0ff');
-            const errLow = new THREE.Color('#00f0ff');
-            const errMid = new THREE.Color('#ffaa00');
-            const errHigh = new THREE.Color('#ff0044');
-            const camDir = new THREE.Vector3(0, 0, 1);
-
-            for (let i = 0; i < fillVertexData.length; i++) {
-                const v = fillVertexData[i];
-                v.current.lerpVectors(v.start, v.target, projTransitionProgress);
-
-                posAttr.setXYZ(i, v.current.x, v.current.y, v.current.z);
-
-                let c = new THREE.Color();
-                if (showAreaError && projTransitionProgress > 0.95) {
-                    const dist = getAreaDistortion(targetProjName, v.lat);
-                    if (dist <= 1.0) {
-                        c.lerpColors(errLow, errMid, dist);
-                    } else {
-                        let t = Math.min(1.0, (dist - 1.0) / 4.0);
-                        c.lerpColors(errMid, errHigh, t);
-                    }
-                } else {
-                    c.copy(baseFillCol);
-                    if (currentProjName === 'globe' && targetProjName === 'globe') {
-                        const n = new THREE.Vector3(v.globe.x, v.globe.y, v.globe.z).normalize();
-                        const dot = n.dot(camDir);
-                        const intensity = THREE.MathUtils.lerp(0.02, 0.3, THREE.MathUtils.smoothstep(dot, -0.15, 0.15));
-                        c.multiplyScalar(intensity);
-                    } else {
-                        c.multiplyScalar(0.25);
-                    }
-                }
-
-                colAttr.setXYZ(i, c.r, c.g, c.b);
-            }
-            posAttr.needsUpdate = true;
-            colAttr.needsUpdate = true;
-        }
-
-        function updateLabels() {
-            if (!showAreaError || projTransitionProgress < 0.95 || (currentProjName === 'globe' && targetProjName === 'globe')) {
-                countryLabels.forEach(l => l.element.classList.add('hidden'));
-                return;
-            }
-
-            const widthHalf = window.innerWidth / 2;
-            const heightHalf = window.innerHeight / 2;
-
-            countryLabels.forEach(l => {
-                l.current.lerpVectors(l.start, l.target, projTransitionProgress);
-
-                const dist = getAreaDistortion(targetProjName, l.lat);
-                const percent = Math.round(dist * 100);
-
-                // Show only if error is above 1 percent
-                if (percent > 1) {
-                    l.element.classList.remove('hidden');
-                    l.element.innerText = `+${percent}%`;
-
-                    if (percent > 200) {
-                        l.element.className = 'absolute font-mono text-[9px] font-bold px-1 py-0.5 rounded pointer-events-none bg-red-950/80 text-red-400 border border-red-500/50 shadow-[0_0_8px_rgba(255,0,68,0.4)]';
-                    } else if (percent > 50) {
-                        l.element.className = 'absolute font-mono text-[9px] font-bold px-1 py-0.5 rounded pointer-events-none bg-amber-950/80 text-amber-400 border border-amber-500/50 shadow-[0_0_8px_rgba(255,170,0,0.4)]';
-                    } else {
-                        l.element.className = 'absolute font-mono text-[9px] font-bold px-1 py-0.5 rounded pointer-events-none bg-cyan-950/80 text-cyan-300 border border-cyan-500/50';
-                    }
-
-                    const vector = l.current.clone();
-                    vector.project(camera);
-
-                    if (vector.z > 1.0) {
-                        l.element.classList.add('hidden');
-                    } else {
-                        const x = (vector.x * widthHalf) + widthHalf;
-                        const y = -(vector.y * heightHalf) + heightHalf;
-                        l.element.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
-                    }
-                } else {
-                    l.element.classList.add('hidden');
-                }
-            });
-        }
-
-        function setProjection(projName) {
-            if (!camera) return;
-
-            currentProjName = targetProjName;
-            targetProjName = projName;
-            projTransitionProgress = 0.0;
-
-            startCameraZ = camera.position.z;
-            targetCameraZ = getOptimalCameraZ(projName);
-
-            for (let i = 0; i < totalSegmentsCount; i++) {
-                const seg = segmentData[i];
-                seg.start1.copy(seg.current1);
-                seg.start2.copy(seg.current2);
-                seg.target1.copy(computeVectorForProj(projName, seg.lon1, seg.lat1));
-                seg.target2.copy(computeVectorForProj(projName, seg.lon2, seg.lat2));
-            }
-
-            for (let i = 0; i < totalGraticuleSegmentsCount; i++) {
-                const seg = graticuleData[i];
-                seg.start1.copy(seg.current1);
-                seg.start2.copy(seg.current2);
-                seg.target1.copy(computeVectorForProj(projName, seg.lon1, seg.lat1));
-                seg.target2.copy(computeVectorForProj(projName, seg.lon2, seg.lat2));
-            }
-
-            fillVertexData.forEach(v => {
-                v.start.copy(v.current);
-                v.target.copy(computeVectorForProj(projName, v.lon, v.lat));
-            });
-
-            countryLabels.forEach(l => {
-                l.start.copy(l.current);
-                l.target.copy(computeVectorForProj(projName, l.lon, l.lat));
-            });
-
-            document.querySelectorAll('.proj-btn').forEach(btn => {
-                btn.className = "proj-btn px-1.5 py-1.5 rounded-xl font-mono text-[9px] font-semibold bg-slate-900/70 text-cyan-400/70 border border-cyan-500/20 hover:bg-cyan-500/10 transition-all";
-            });
-            const activeBtn = document.getElementById(`btn-${projName}`);
-            if (activeBtn) {
-                activeBtn.className = "proj-btn px-1.5 py-1.5 rounded-xl font-mono text-[9px] font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-400/50 hover:bg-cyan-500/30 transition-all shadow-[0_0_12px_rgba(0,240,255,0.2)]";
-            }
-
-            const statusDisplay = document.getElementById('status-display');
-            if (statusDisplay) statusDisplay.innerText = `MODE: ${projName.toUpperCase()}`;
-        }
-
-        function onWindowResize() {
-            if (!camera || !renderer || !composer) return;
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            composer.setSize(window.innerWidth, window.innerHeight);
-            if (pixelPass) {
-                pixelPass.uniforms['resolution'].value.set(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
-            }
-            if (lineMaterial) {
-                lineMaterial.resolution.set(window.innerWidth, window.innerHeight);
-            }
-            if (graticuleMaterial) {
-                graticuleMaterial.resolution.set(window.innerWidth, window.innerHeight);
-            }
-            targetCameraZ = getOptimalCameraZ(targetProjName);
-        }
-
-        const clock = new THREE.Clock();
-
-        function animate() {
-            requestAnimationFrame(animate);
-
-            const delta = clock.getDelta();
-
-            if (projTransitionProgress < 1.0) {
-                projTransitionProgress += delta * 1.5;
-                if (projTransitionProgress > 1.0) projTransitionProgress = 1.0;
-            }
-
-            if (camera) {
-                const currentZ = THREE.MathUtils.lerp(startCameraZ, targetCameraZ, projTransitionProgress);
-                camera.position.set(0, 0, currentZ);
-            }
-
-            updateGeometryBuffers();
-
-            if (composer) {
-                composer.render();
-            }
-        }
-
-        window.onload = function() {
-            initThree();
-        };
-    </script>
+                <!-- Secondary Source Code Link -->
+                <a class="github-source-link" href="${repo.html_url}" target="_blank" rel="noopener">
+                  Source Code ↗
+                </a>
+              </div>
+            </div>
+          `;
+
+          grid.appendChild(card);
+        });
+
+      } catch (err) {
+        loading.innerText = `Error: ${err.message}`;
+        loading.style.color = "var(--neon-pink)";
+      }
+    }
+
+    fetchRepos();
+  </script>
 </body>
 </html>
